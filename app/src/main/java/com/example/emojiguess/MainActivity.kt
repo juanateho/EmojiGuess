@@ -70,6 +70,7 @@ fun EmojiGuessApp(
                 onJoinGame = { viewModel.joinGame(it) },
                 errorMessage = uiState.errorMessage,
                 onClearError = { viewModel.clearError() },
+                onBack = { viewModel.navigateToLogin() }, // Back to Login
                 isLandscape = isLandscape
             )
             GameStatus.LOBBY -> LobbyScreen(
@@ -77,7 +78,8 @@ fun EmojiGuessApp(
                 onStartGame = { viewModel.startGame() },
                 gameId = uiState.gameId,
                 isLandscape = isLandscape,
-                isHost = uiState.isHost
+                isHost = uiState.isHost,
+                onBack = { viewModel.navigateToMenu() } // Back to Menu
             )
             GameStatus.PLAYING -> PlayingScreen(
                 timeRemaining = uiState.timeRemaining,
@@ -86,7 +88,8 @@ fun EmojiGuessApp(
                 chatMessages = uiState.chatMessages,
                 onGuess = { viewModel.submitGuess(it) },
                 onSendMessage = { viewModel.sendChatMessage(it) },
-                isLandscape = isLandscape
+                isLandscape = isLandscape,
+                currentRound = uiState.currentRound // Added parameter
             )
             GameStatus.VICTORY, GameStatus.GAME_OVER -> {
                 val currentPlayer = uiState.players.find { it.isCurrentUser }
@@ -96,6 +99,7 @@ fun EmojiGuessApp(
                     userEmoji = uiState.userEmoji,
                     status = uiState.status,
                     roundHistory = uiState.roundHistory,
+                    players = uiState.players,
                     onRestart = { viewModel.resetGame() },
                     isLandscape = isLandscape
                 )

@@ -39,12 +39,14 @@ fun GameOverScreen(
     userEmoji: String?,
     status: GameStatus,
     roundHistory: List<RoundInfo>,
+    players: List<Player>,
     onRestart: () -> Unit,
     isLandscape: Boolean // Keeping signature compatible, though unused
 ) {
     // 1. Screen Customization logic
     val isMyVictory = winner != null && winner.id == currentPlayer?.id
-    val isNoSurvivors = status == GameStatus.GAME_OVER && winner == null
+    val anySurvivors = players.any { it.isAlive }
+    val isNoSurvivors = status == GameStatus.GAME_OVER && winner == null && !anySurvivors
 
     // Colors & Texts
     val themeColor: Color

@@ -19,12 +19,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -44,7 +46,8 @@ fun LobbyScreen(
     onStartGame: () -> Unit,
     gameId: String?,
     isLandscape: Boolean,
-    isHost: Boolean // New parameter
+    isHost: Boolean,
+    onBack: () -> Unit // Added callback parameter
 ) {
     val clipboardManager = LocalClipboardManager.current
 
@@ -55,22 +58,38 @@ fun LobbyScreen(
             .padding(top = if (!isLandscape) 40.dp else 0.dp), // Space for camera
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Lobby",
-            color = Color.White,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .background(Color(0xFF6C36E2), RoundedCornerShape(16.dp))
-                .padding(horizontal = 32.dp, vertical = 8.dp)
-        )
+        // Header with Back Button
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+             IconButton(
+                onClick = onBack,
+                modifier = Modifier.align(Alignment.CenterStart)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back to Menu",
+                    tint = Color.White
+                )
+            }
+
+            Text(
+                text = "Lobby",
+                color = Color.White,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .background(Color(0xFF6C36E2), RoundedCornerShape(16.dp))
+                    .padding(horizontal = 32.dp, vertical = 8.dp)
+            )
+        }
 
         // Display Game ID
         if (gameId != null) {
             Row(
                 modifier = Modifier
-                    .padding(bottom = 16.dp)
+                    .padding(vertical = 16.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(Color(0xFF2D2D3A))
                     .clickable {

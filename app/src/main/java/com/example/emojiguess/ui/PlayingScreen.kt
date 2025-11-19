@@ -50,7 +50,8 @@ fun PlayingScreen(
     chatMessages: List<ChatMessage>,
     onGuess: (String) -> Unit,
     onSendMessage: (String) -> Unit,
-    isLandscape: Boolean
+    isLandscape: Boolean,
+    currentRound: Int // Added parameter
 ) {
     var showEmojiSelection by remember { mutableStateOf(false) }
 
@@ -68,7 +69,7 @@ fun PlayingScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
              Text(
-                text = "Game",
+                text = "Round: $currentRound",
                 color = Color.White,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold

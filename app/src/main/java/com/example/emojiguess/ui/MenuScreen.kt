@@ -16,9 +16,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -48,6 +52,7 @@ fun MenuScreen(
     onJoinGame: (String) -> Unit,
     errorMessage: String?,
     onClearError: () -> Unit,
+    onBack: () -> Unit, // New callback for back navigation
     isLandscape: Boolean
 ) {
     var gameIdToJoin by remember { mutableStateOf("") }
@@ -67,6 +72,20 @@ fun MenuScreen(
     ) {
         // Fondo Geométrico (Reutilizado o similar al Login)
         GeometricBackground()
+        
+        // Back Button (Top Left)
+        IconButton(
+            onClick = onBack,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back to Login",
+                tint = Color.White
+            )
+        }
 
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),

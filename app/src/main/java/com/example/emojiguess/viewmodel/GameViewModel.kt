@@ -312,4 +312,17 @@ class GameViewModel : ViewModel() {
         }
         currentGameId = null
     }
+
+    // Navigation Helpers
+    fun navigateToLogin() {
+        _uiState.update { it.copy(status = GameStatus.LOGIN) }
+    }
+
+    fun navigateToMenu() {
+        // If currently inside a game/lobby, maybe we should clean up?
+        // For now just simple navigation state change.
+        _uiState.update { it.copy(status = GameStatus.MENU, errorMessage = null) }
+        // Optionally reset game ID if leaving lobby
+        currentGameId = null
+    }
 }
