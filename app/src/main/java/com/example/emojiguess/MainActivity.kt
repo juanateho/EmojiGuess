@@ -88,14 +88,18 @@ fun EmojiGuessApp(
                 onSendMessage = { viewModel.sendChatMessage(it) },
                 isLandscape = isLandscape
             )
-            GameStatus.VICTORY, GameStatus.GAME_OVER -> GameOverScreen(
-                winner = uiState.winner,
-                userEmoji = uiState.userEmoji,
-                status = uiState.status,
-                roundHistory = uiState.roundHistory,
-                onRestart = { viewModel.resetGame() },
-                isLandscape = isLandscape
-            )
+            GameStatus.VICTORY, GameStatus.GAME_OVER -> {
+                val currentPlayer = uiState.players.find { it.isCurrentUser }
+                GameOverScreen(
+                    winner = uiState.winner,
+                    currentPlayer = currentPlayer,
+                    userEmoji = uiState.userEmoji,
+                    status = uiState.status,
+                    roundHistory = uiState.roundHistory,
+                    onRestart = { viewModel.resetGame() },
+                    isLandscape = isLandscape
+                )
+            }
         }
     }
 }

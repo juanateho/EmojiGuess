@@ -34,17 +34,18 @@ import com.example.emojiguess.model.RoundInfo
 
 @Composable
 fun GameOverScreen(
-    winner: Player?, 
+    winner: Player?,
+    currentPlayer: Player?,
     userEmoji: String?,
-    status: GameStatus, 
+    status: GameStatus,
     roundHistory: List<RoundInfo>,
     onRestart: () -> Unit,
     isLandscape: Boolean // Keeping signature compatible, though unused
 ) {
     // 1. Screen Customization logic
-    val isMyVictory = winner != null && winner.isCurrentUser
+    val isMyVictory = winner != null && winner.id == currentPlayer?.id
     val isNoSurvivors = status == GameStatus.GAME_OVER && winner == null
-    
+
     // Colors & Texts
     val themeColor: Color
     val title: String
@@ -207,28 +208,27 @@ fun RoundHistoryItem(round: RoundInfo, themeColor: Color) {
                     )
                     
                     // 2. RoundHistoryItem Update logic
-                    if (player.isAlive) {
+                    if (player.lastGuessCorrect) {
+                        // Guessed correctly
                         Text(
-                            text = "Alive ✅",
+                            text = "Guessed: ${player.lastGuessedEmoji} ✅",
                             color = Color.Green,
                             fontSize = 12.sp
                         )
+                    } else if (player.hasGuessed) {
+                        // Guessed, but incorrectly
+                        Text(
+                            text = "Guessed: ${player.lastGuessedEmoji} ❌",
+                            color = Color.Red,
+                            fontSize = 12.sp
+                        )
                     } else {
-                        if (player.hasGuessed) {
-                             // Incorrect guess
-                             Text(
-                                text = "Guessed: ${player.lastGuessedEmoji} ❌",
-                                color = Color.Red,
-                                fontSize = 12.sp
-                            )
-                        } else {
-                            // Time Out
-                            Text(
-                                text = "Time Out ⏱️",
-                                color = Color(0xFFFF9800), // Orange
-                                fontSize = 12.sp
-                            )
-                        }
+                        // Did not guess (time out)
+                        Text(
+                            text = "Time Out ⏱️",
+                            color = Color(0xFFFF9800), // Orange
+                            fontSize = 12.sp
+                        )
                     }
                 }
                 
