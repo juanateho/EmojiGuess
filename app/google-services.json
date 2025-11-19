@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "154069224298",
+    "project_id": "emojiguess-69080",
+    "storage_bucket": "emojiguess-69080.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154069224298:android:14c45ea3b436d3b3f1f313",
+        "android_client_info": {
+          "package_name": "com.example.emojiguess"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA584talFYgGoBimL6bzDURAJEoohSdqHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
