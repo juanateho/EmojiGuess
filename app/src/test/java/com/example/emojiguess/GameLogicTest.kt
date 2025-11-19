@@ -2,12 +2,14 @@ package com.example.emojiguess
 
 import com.example.emojiguess.model.Emojis
 import com.example.emojiguess.model.Player
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.Timer
 import kotlin.concurrent.schedule
 
-class ExampleUnitTest {
+class GameLogicTest {
     @Test
     fun testAssignEmojisToPlayers() {
         val players = listOf(
@@ -18,11 +20,13 @@ class ExampleUnitTest {
 
         val updatedPlayers = Emojis.assignEmojisToPlayers(players)
 
+        // Verificar que cada jugador tiene un emoji
         updatedPlayers.values.forEach { player ->
-            assertTrue("El jugador ${player.name} debe tener un emoji", player.assignedEmoji.isNotEmpty())
+            assertTrue("El jugador ${player.name} debe tener un emoji", player.emoji.isNotEmpty())
         }
 
-        val uniqueEmojis = updatedPlayers.values.map { it.assignedEmoji }.toSet()
+        // Verificar que al menos dos jugadores tienen emojis diferentes
+        val uniqueEmojis = updatedPlayers.values.map { it.emoji }.toSet()
         assertTrue("Debe haber más de un emoji único asignado", uniqueEmojis.size > 1)
     }
 
@@ -35,7 +39,7 @@ class ExampleUnitTest {
             timerFinished = true
         }
 
-        Thread.sleep(1500)
+        Thread.sleep(1500) // Esperar más que el tiempo del temporizador
 
         assertTrue("El temporizador debería haber terminado", timerFinished)
     }
