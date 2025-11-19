@@ -16,6 +16,7 @@ import androidx.navigation.navArgument
 import com.example.emojiguess.ui.screens.GameScreen
 import com.example.emojiguess.ui.screens.LobbyScreen
 import com.example.emojiguess.ui.screens.LoginScreen
+import com.example.emojiguess.ui.screens.WaitingRoomScreen
 import com.example.emojiguess.ui.theme.EmojiGuessTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,7 +36,21 @@ class MainActivity : ComponentActivity() {
                             LoginScreen(onLoginSuccess = { navController.navigate("lobby") })
                         }
                         composable("lobby") {
-                            LobbyScreen(onCreateGame = { gameId -> navController.navigate("game/$gameId") })
+                            LobbyScreen(onNavigateToGame = { gameId -> navController.navigate("waitingroom/$gameId") })
+                        }
+                        composable(
+                            "waitingroom/{gameId}",
+                            arguments = listOf(navArgument("gameId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val gameId = backStackEntry.arguments?.getString("gameId")
+                            WaitingRoomScreen(
+                                gameId = gameId,
+                                onGameStarted = { 
+                                    if (gameId != null) {
+                                        navController.navigate("game/$gameId")
+                                    } 
+                                }
+                            )
                         }
                         composable(
                             "game/{gameId}",
