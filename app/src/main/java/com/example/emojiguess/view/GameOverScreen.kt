@@ -1,4 +1,4 @@
-package com.example.emojiguess.ui
+package com.example.emojiguess.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,14 +41,12 @@ fun GameOverScreen(
     roundHistory: List<RoundInfo>,
     players: List<Player>,
     onRestart: () -> Unit,
-    isLandscape: Boolean // Keeping signature compatible, though unused
+    isLandscape: Boolean
 ) {
-    // 1. Screen Customization logic
     val isMyVictory = winner != null && winner.id == currentPlayer?.id
     val anySurvivors = players.any { it.isAlive }
     val isNoSurvivors = status == GameStatus.GAME_OVER && winner == null && !anySurvivors
 
-    // Colors & Texts
     val themeColor: Color
     val title: String
     val message: String
@@ -56,21 +54,18 @@ fun GameOverScreen(
 
     when {
         isMyVictory -> {
-            // Victory: Green theme, 'You Won!'
-            themeColor = Color(0xFF39FF14) // Neon Green
+            themeColor = Color(0xFF39FF14)
             title = "You Won!"
             message = "You are the Emoji Master!"
             backgroundGradient = listOf(Color(0xFF0A290A), Color(0xFF000000))
         }
         isNoSurvivors -> {
-            // No Survivors: Dark Red/Gray theme, 'No Survivors'
-            themeColor = Color(0xFFB00020) // Darker Red
+            themeColor = Color(0xFFB00020)
             title = "No Survivors"
             message = "Everyone was eliminated!"
             backgroundGradient = listOf(Color(0xFF1A1A1A), Color(0xFF000000))
         }
         else -> {
-            // Eliminated: Red theme, 'Defeated', show winner's name
             themeColor = Color.Red
             title = "Defeated"
             message = if (winner != null) "${winner.name} won the game!" else "Better luck next time!"
@@ -96,7 +91,6 @@ fun GameOverScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Title
             Text(
                 text = title,
                 fontSize = 36.sp,
@@ -105,14 +99,12 @@ fun GameOverScreen(
                 textAlign = TextAlign.Center
             )
 
-            // Icon
             Text(
                 text = if (isMyVictory) "🏆" else if (isNoSurvivors) "💀" else "💔",
                 fontSize = 60.sp,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             
-            // Message
             Text(
                 text = message,
                 fontSize = 18.sp,
@@ -120,7 +112,6 @@ fun GameOverScreen(
                 textAlign = TextAlign.Center
             )
 
-             // Extra info about user's emoji if lost
             if (!isMyVictory && userEmoji != null) {
                  Text(
                     text = "Your Emoji was: $userEmoji",
@@ -142,14 +133,12 @@ fun GameOverScreen(
                 modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
             )
 
-            // History Table
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Sort by round number descending (latest round first)
                 items(roundHistory.sortedByDescending { it.roundNumber }) { round ->
                     RoundHistoryItem(round, themeColor)
                 }
@@ -157,7 +146,6 @@ fun GameOverScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Main Menu Button
             Button(
                 onClick = onRestart,
                 colors = ButtonDefaults.buttonColors(containerColor = themeColor.copy(alpha = 0.8f)),
@@ -194,7 +182,6 @@ fun RoundHistoryItem(round: RoundInfo, themeColor: Color) {
         )
         Spacer(modifier = Modifier.height(4.dp))
         
-        // Iterate through players in this round
         round.playersSnapshot.values.forEach { player ->
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -209,32 +196,27 @@ fun RoundHistoryItem(round: RoundInfo, themeColor: Color) {
                         fontSize = 14.sp
                     )
                     
-                    // 2. RoundHistoryItem Update logic
                     if (player.lastGuessCorrect) {
-                        // Guessed correctly
                         Text(
                             text = "Guessed: ${player.lastGuessedEmoji} ✅",
                             color = Color.Green,
                             fontSize = 12.sp
                         )
                     } else if (player.hasGuessed) {
-                        // Guessed, but incorrectly
                         Text(
                             text = "Guessed: ${player.lastGuessedEmoji} ❌",
                             color = Color.Red,
                             fontSize = 12.sp
                         )
                     } else {
-                        // Did not guess (time out)
                         Text(
                             text = "Time Out ⏱️",
-                            color = Color(0xFFFF9800), // Orange
+                            color = Color(0xFFFF9800),
                             fontSize = 12.sp
                         )
                     }
                 }
                 
-                // Correct Answer Column
                 Text(
                     text = "Was: ${player.assignedEmoji}",
                     fontSize = 16.sp,

@@ -90,7 +90,6 @@ class GameRepository {
                     trySend(gameData)
                 } catch (e: Exception) {
                     Log.e("GameRepository", "Error parsing game data", e)
-                    // Intentar enviar null o manejar el error de otra forma
                     trySend(null)
                 }
             }
@@ -116,7 +115,6 @@ class GameRepository {
 
     fun submitGuess(gameId: String, isCorrect: Boolean) {
          val userId = auth.currentUser?.uid ?: return
-         // Solo marcamos que adivinó y si fue correcto. NO cambiamos isAlive todavía.
          val updates = mapOf<String, Any>(
              "hasGuessed" to true,
              "lastGuessCorrect" to isCorrect
@@ -131,9 +129,6 @@ class GameRepository {
         chatRef.child(msgId).setValue(chatMessage)
     }
 
-    // --- NUEVAS FUNCIONES PARA LA LÓGICA DEL JUEGO ---
-
-    // Inicializa la primera ronda asignando emojis
     fun startGameLogic(gameId: String, currentPlayers: List<Player>) {
         val updatedPlayers = Emojis.assignEmojisToPlayers(currentPlayers)
         val updates = mapOf(
@@ -141,32 +136,29 @@ class GameRepository {
             "players" to updatedPlayers,
             "currentRound" to 1,
             "timeRemaining" to 60,
-            "roundHistory" to emptyList<RoundInfo>() // Inicializar historial
+            "roundHistory" to emptyList<RoundInfo>()
         )
         gamesRef.child(gameId).updateChildren(updates)
     }
 
-    // Finaliza la ronda actual, elimina perdedores y prepara la siguiente
     fun resolveRoundAndStartNext(gameId: String, currentPlayers: List<Player>, currentRound: Int, currentHistory: List<RoundInfo>) {
-        // 1. Guardar Snapshot en historial
         val roundInfo = RoundInfo(
             roundNumber = currentRound,
             playersSnapshot = currentPlayers.associateBy { it.id }
         )
         val newHistory = currentHistory + roundInfo
 
-        // 2. Identificar perdedores (vivos que no adivinaron O adivinaron incorrectamente)
         val playersAfterRound = currentPlayers.map { player ->
             if (player.isAlive) {
                 if (player.hasGuessed) {
-                    // Si adivinó, verificamos si fue correcto
+
                     if (player.lastGuessCorrect) {
                         player // Sobrevive
                     } else {
-                        player.copy(isAlive = false) // Falló -> Eliminado
+                        player.copy(isAlive = false)
                     }
                 } else {
-                    // No adivinó a tiempo -> Eliminado
+
                     player.copy(isAlive = false)
                 }
             } else {
@@ -174,10 +166,9 @@ class GameRepository {
             }
         }
 
-        // 3. Verificar condiciones de victoria
         val survivors = playersAfterRound.filter { it.isAlive }
         if (survivors.size <= 1) {
-            // Fin del juego
+
             val winnerId = survivors.firstOrNull()?.id
             val updates = mapOf<String, Any>(
                 "status" to if (winnerId != null) GameStatus.VICTORY.name else GameStatus.GAME_OVER.name,
@@ -187,7 +178,7 @@ class GameRepository {
             )
             gamesRef.child(gameId).updateChildren(updates)
         } else {
-            // 4. Siguiente ronda: Reasignar emojis (esto también resetea hasGuessed y lastGuessCorrect)
+
             val playersNextRoundMap = Emojis.assignEmojisToPlayers(playersAfterRound)
             
             val updates = mapOf(
@@ -201,7 +192,6 @@ class GameRepository {
     }
 }
 
-// Modificado para usar String en status y permitir chat nulo
 data class GameData(
     val status: String = "LOGIN", 
     val players: Map<String, Player> = emptyMap(),
@@ -210,9 +200,8 @@ data class GameData(
     val chat: Map<String, ChatMessage>? = null,
     val winnerId: String? = null,
     val hostId: String? = null,
-    val roundHistory: List<RoundInfo> = emptyList() // Nuevo campo historial
+    val roundHistory: List<RoundInfo> = emptyList()
 ) {
-    // Helper to convert map to list for UI
     fun getPlayerList(): List<Player> = players.values.toList()
     fun getChatList(): List<ChatMessage> = chat?.values?.toList() ?: emptyList()
 }

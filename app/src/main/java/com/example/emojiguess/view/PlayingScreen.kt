@@ -1,4 +1,4 @@
-package com.example.emojiguess.ui
+package com.example.emojiguess.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,7 +51,7 @@ fun PlayingScreen(
     onGuess: (String) -> Unit,
     onSendMessage: (String) -> Unit,
     isLandscape: Boolean,
-    currentRound: Int // Added parameter
+    currentRound: Int
 ) {
     var showEmojiSelection by remember { mutableStateOf(false) }
 
@@ -59,10 +59,9 @@ fun PlayingScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .padding(top = if (!isLandscape) 40.dp else 0.dp), // Space for camera
+            .padding(top = if (!isLandscape) 40.dp else 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Header & Timer
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -98,10 +97,8 @@ fun PlayingScreen(
 
         if (isLandscape) {
             Row(modifier = Modifier.weight(1f)) {
-                // Players List (Left)
                 PlayerList(players, modifier = Modifier.weight(1f))
                 
-                // Chat & Controls (Right)
                 Column(modifier = Modifier.weight(1f).padding(start = 16.dp)) {
                     ChatArea(
                         messages = chatMessages,
@@ -117,14 +114,10 @@ fun PlayingScreen(
                 }
             }
         } else {
-            // Portrait Mode - Improved Layout
-            
-            // Players List takes about 55% of the space
             PlayerList(players, modifier = Modifier.weight(0.55f))
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Chat Area takes the remaining space (approx 45% minus controls)
             ChatArea(
                 messages = chatMessages,
                 onSendMessage = onSendMessage,
@@ -133,7 +126,6 @@ fun PlayingScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Controls at the bottom with enhanced styling
             GameControls(
                 onSelectEmoji = { showEmojiSelection = true },
                 canGuess = players.find { it.isCurrentUser }?.isAlive == true &&

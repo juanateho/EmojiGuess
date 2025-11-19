@@ -1,4 +1,4 @@
-package com.example.emojiguess.ui
+package com.example.emojiguess.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,7 +41,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// Colores consistentes con LoginScreen
 private val DeepViolet = Color(0xFF1A0029)
 private val NeonGreen = Color(0xFF39FF14)
 private val SoftPurple = Color(0xFFBB86FC)
@@ -52,13 +51,11 @@ fun MenuScreen(
     onJoinGame: (String) -> Unit,
     errorMessage: String?,
     onClearError: () -> Unit,
-    onBack: () -> Unit, // New callback for back navigation
+    onBack: () -> Unit,
     isLandscape: Boolean
 ) {
     var gameIdToJoin by remember { mutableStateOf("") }
 
-    // Logic to determine if the text field should be highlighted as error
-    // Only highlight if the error specifically relates to the Game ID (not found)
     val isIdError = errorMessage != null && errorMessage.contains("Game not found", ignoreCase = true)
 
     Box(
@@ -70,10 +67,8 @@ fun MenuScreen(
                 )
             )
     ) {
-        // Fondo Geométrico (Reutilizado o similar al Login)
         GeometricBackground()
         
-        // Back Button (Top Left)
         IconButton(
             onClick = onBack,
             modifier = Modifier
@@ -122,7 +117,6 @@ fun MenuScreen(
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
 
-                // Opción 1: Crear Partida
                 Button(
                     onClick = onCreateGame,
                     modifier = Modifier
@@ -163,7 +157,6 @@ fun MenuScreen(
                 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Opción 2: Unirse a Partida
                 Text(
                     text = "Join Existing Game",
                     color = Color.White,

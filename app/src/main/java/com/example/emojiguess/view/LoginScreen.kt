@@ -1,4 +1,4 @@
-package com.example.emojiguess.ui
+package com.example.emojiguess.view
 
 import android.content.pm.ActivityInfo
 import androidx.activity.ComponentActivity
@@ -44,7 +44,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// Colores personalizados para esta pantalla
 private val DeepViolet = Color(0xFF1A0029)
 private val BrightViolet = Color(0xFF6200EE)
 private val NeonGreen = Color(0xFF39FF14)
@@ -55,15 +54,11 @@ fun LoginScreen(
     onLogin: (String) -> Unit, 
     isLandscape: Boolean
 ) {
-    // Lock to portrait
     val context = LocalContext.current
     DisposableEffect(Unit) {
         val activity = context as? ComponentActivity
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         onDispose {
-            // Reset orientation if needed when leaving this screen, 
-            // but request said "app solo se pueda usar verticalmente", so we might keep it.
-            // Usually we reset to UNSPECIFIED if we want rotation elsewhere.
         }
     }
 
@@ -78,15 +73,12 @@ fun LoginScreen(
                 )
             )
     ) {
-        // --- Fondo Geométrico Decorativo ---
         GeometricBackground()
 
-        // --- Contenido Principal ---
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            // Since we force portrait, we can simplify width calculation or keep it responsive just in case
             val width = maxWidth * 0.85f
             
             Column(
@@ -101,7 +93,6 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // Título
                 Text(
                     text = "EMOJI\nGUESS",
                     fontSize = 48.sp,
@@ -120,7 +111,6 @@ fun LoginScreen(
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
 
-                // Input
                 OutlinedTextField(
                     value = username,
                     onValueChange = { if (it.length <= 12) username = it },
@@ -146,7 +136,6 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Botón
                 Button(
                     onClick = { onLogin(username) },
                     modifier = Modifier
@@ -179,7 +168,6 @@ fun LoginScreen(
 @Composable
 fun GeometricBackground() {
     Box(modifier = Modifier.fillMaxSize()) {
-        // Círculo grande superior izquierda
         Box(
             modifier = Modifier
                 .size(250.dp)
@@ -189,7 +177,6 @@ fun GeometricBackground() {
                 .blur(40.dp)
         )
 
-        // Círculo medio derecha - Changed to SoftPurple instead of NeonGreen as requested
         Box(
             modifier = Modifier
                 .size(180.dp)
@@ -200,18 +187,16 @@ fun GeometricBackground() {
                 .blur(50.dp)
         )
 
-        // Círculo inferior
         Box(
             modifier = Modifier
                 .size(300.dp)
                 .align(Alignment.BottomStart)
                 .offset(x = (-50).dp, y = 100.dp)
                 .alpha(0.1f)
-                .background(DeepViolet, CircleShape) // Changed from SoftPurple to DeepViolet for variety
+                .background(DeepViolet, CircleShape)
                 .blur(60.dp)
         )
         
-        // Pequeños puntos decorativos - Changed green dot to purple
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)

@@ -31,19 +31,16 @@ class GameViewModel : ViewModel() {
     private var currentUserId: String? = null
 
     init {
-        // Try to restore previous session or sign in
         initializeAuth()
     }
 
     private fun initializeAuth() {
         viewModelScope.launch {
-            // Check if we are already signed in
             val existingUid = repository.getCurrentUserUid()
             if (existingUid != null) {
                 currentUserId = existingUid
                 Log.d("GameViewModel", "Already signed in with UID: $existingUid")
             } else {
-                // Try to sign in
                 val uid = repository.signInAnonymously()
                 if (uid != null) {
                     currentUserId = uid
@@ -59,16 +56,13 @@ class GameViewModel : ViewModel() {
         if (username.isBlank()) return
         
         viewModelScope.launch {
-            // Check auth status but don't block navigation
             if (currentUserId == null) {
                  currentUserId = repository.getCurrentUserUid()
             }
             if (currentUserId == null) {
-                // Retry sign in
                 currentUserId = repository.signInAnonymously()
             }
             
-            // Always navigate to Menu, auth can be retried there if needed
             _uiState.update { 
                 it.copy(
                     localPlayerName = username,
@@ -86,16 +80,14 @@ class GameViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(errorMessage = null) } // Clear previous errors
+            _uiState.update { it.copy(errorMessage = null) }
 
-            // Robust Auth Check
             if (currentUserId == null) {
                  currentUserId = repository.getCurrentUserUid() ?: repository.signInAnonymously()
             }
 
             if (currentUserId == null) {
                  _uiState.update { it.copy(errorMessage = "Auth failed. Check internet connection.") }
-                 // Retry one last time after a small delay
                  delay(1000)
                  currentUserId = repository.signInAnonymously()
                  if (currentUserId == null) return@launch
@@ -130,13 +122,11 @@ class GameViewModel : ViewModel() {
         }
         if (inputGameId.isBlank()) return
         
-        // Convert input to uppercase to ensure case-insensitivity
         val gameId = inputGameId.uppercase().trim()
         
         viewModelScope.launch {
             _uiState.update { it.copy(errorMessage = null) }
 
-            // Robust Auth Check
             if (currentUserId == null) {
                  currentUserId = repository.getCurrentUserUid() ?: repository.signInAnonymously()
             }
@@ -193,24 +183,16 @@ class GameViewModel : ViewModel() {
                     GameStatus.LOBBY
                 }
 
-                // --- LÓGICA DE JUEGO ---
-
-                // 1. Finalizar ronda anticipada (Solo Host)
                 if (isHost && statusEnum == GameStatus.PLAYING) {
                     val survivors = playersList.filter { it.isAlive }
                     val allGuessed = survivors.isNotEmpty() && survivors.all { it.hasGuessed }
                     
                     if (allGuessed) {
-                         // Finalizar ronda inmediatamente
                          timerJob?.cancel()
-                         // Delay breve para que los jugadores vean su resultado antes de cambiar (opcional)
-                         // Pero el usuario dijo "no me hagas esperar".
-                         // Resolvemos. Usamos gameData.roundHistory que es el actual.
                          repository.resolveRoundAndStartNext(gameId, playersList, gameData.currentRound, gameData.roundHistory)
                     }
                 }
 
-                // 2. Control del temporizador (Solo Host)
                 if (isHost && statusEnum == GameStatus.PLAYING && timerJob?.isActive != true) {
                    startRound()
                 }
@@ -218,7 +200,6 @@ class GameViewModel : ViewModel() {
                     timerJob?.cancel()
                 }
 
-                // 3. Expulsar a Game Over si estoy muerto, incluso si el juego sigue
                 val finalStatus = if (statusEnum == GameStatus.PLAYING && currentUserPlayer?.isAlive == false) {
                     GameStatus.GAME_OVER
                 } else {
@@ -274,7 +255,6 @@ class GameViewModel : ViewModel() {
             repository.updateTimer(gameId, 0)
             
             val currentState = _uiState.value
-            // Asegurarse de pasar el historial actual.
             repository.resolveRoundAndStartNext(gameId, currentState.players, currentState.currentRound, currentState.roundHistory)
             
             delay(2000)
@@ -313,16 +293,12 @@ class GameViewModel : ViewModel() {
         currentGameId = null
     }
 
-    // Navigation Helpers
     fun navigateToLogin() {
         _uiState.update { it.copy(status = GameStatus.LOGIN) }
     }
 
     fun navigateToMenu() {
-        // If currently inside a game/lobby, maybe we should clean up?
-        // For now just simple navigation state change.
         _uiState.update { it.copy(status = GameStatus.MENU, errorMessage = null) }
-        // Optionally reset game ID if leaving lobby
         currentGameId = null
     }
 }

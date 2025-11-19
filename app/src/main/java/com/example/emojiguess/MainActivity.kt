@@ -20,11 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.emojiguess.model.GameStatus
-import com.example.emojiguess.ui.GameOverScreen
-import com.example.emojiguess.ui.LobbyScreen
-import com.example.emojiguess.ui.LoginScreen
-import com.example.emojiguess.ui.MenuScreen
-import com.example.emojiguess.ui.PlayingScreen
+import com.example.emojiguess.view.GameOverScreen
+import com.example.emojiguess.view.LobbyScreen
+import com.example.emojiguess.view.LoginScreen
+import com.example.emojiguess.view.MenuScreen
+import com.example.emojiguess.view.PlayingScreen
 import com.example.emojiguess.ui.theme.EmojiGuessTheme
 import com.example.emojiguess.viewmodel.GameViewModel
 

@@ -1,4 +1,4 @@
-package com.example.emojiguess.ui
+package com.example.emojiguess.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -42,12 +42,12 @@ import com.example.emojiguess.model.Player
 
 @Composable
 fun LobbyScreen(
-    players: List<Player>, 
+    players: List<Player>,
     onStartGame: () -> Unit,
     gameId: String?,
     isLandscape: Boolean,
     isHost: Boolean,
-    onBack: () -> Unit // Added callback parameter
+    onBack: () -> Unit
 ) {
     val clipboardManager = LocalClipboardManager.current
 
@@ -55,10 +55,9 @@ fun LobbyScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .padding(top = if (!isLandscape) 40.dp else 0.dp), // Space for camera
+            .padding(top = if (!isLandscape) 40.dp else 0.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Header with Back Button
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -85,7 +84,6 @@ fun LobbyScreen(
             )
         }
 
-        // Display Game ID
         if (gameId != null) {
             Row(
                 modifier = Modifier
@@ -120,7 +118,6 @@ fun LobbyScreen(
                     PlayerList(players)
                 }
                 Column(modifier = Modifier.weight(1f).padding(start = 16.dp), verticalArrangement = Arrangement.Center) {
-                    // Only show button if user is host
                     if (isHost) {
                         Button(
                             onClick = onStartGame,
@@ -142,7 +139,6 @@ fun LobbyScreen(
         } else {
             PlayerList(players, modifier = Modifier.weight(1f))
             
-            // Only show button if user is host
             if (isHost) {
                 Button(
                     onClick = onStartGame,
@@ -227,7 +223,6 @@ fun PlayerCard(player: Player, showEmoji: Boolean) {
             
             Spacer(modifier = Modifier.weight(1f))
             
-            // Cambiado de ✅ a 🔒 para indicar que ya jugó pero no si acertó
             if(player.hasGuessed && player.isAlive) {
                 Text("🔒", fontSize = 16.sp)
             }
