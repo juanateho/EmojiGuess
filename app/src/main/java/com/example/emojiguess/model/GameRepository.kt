@@ -201,7 +201,4 @@ data class GameData(
     val winnerId: String? = null,
     val hostId: String? = null,
     val roundHistory: List<RoundInfo> = emptyList()
-) {
-    fun getPlayerList(): List<Player> = players.values.toList()
-    fun getChatList(): List<ChatMessage> = chat?.values?.toList() ?: emptyList()
-}
+)

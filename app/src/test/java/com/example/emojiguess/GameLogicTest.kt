@@ -2,8 +2,6 @@ package com.example.emojiguess
 
 import com.example.emojiguess.model.Emojis
 import com.example.emojiguess.model.Player
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.Timer
@@ -22,11 +20,11 @@ class GameLogicTest {
 
         // Verificar que cada jugador tiene un emoji
         updatedPlayers.values.forEach { player ->
-            assertTrue("El jugador ${player.name} debe tener un emoji", player.emoji.isNotEmpty())
+            assertTrue("El jugador ${player.name} debe tener un emoji", player.assignedEmoji.isNotEmpty())
         }
 
         // Verificar que al menos dos jugadores tienen emojis diferentes
-        val uniqueEmojis = updatedPlayers.values.map { it.emoji }.toSet()
+        val uniqueEmojis = updatedPlayers.values.map { it.assignedEmoji }.toSet()
         assertTrue("Debe haber más de un emoji único asignado", uniqueEmojis.size > 1)
     }
 
